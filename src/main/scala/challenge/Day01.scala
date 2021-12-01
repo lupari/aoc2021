@@ -4,9 +4,9 @@ import scala.io.Source
 
 object Day01 {
 
-  val entries: List[Int] = ??? // Source.fromResource("day01.txt").getLines().map(_.toInt).toList
+  val input: List[Int] = Source.fromResource("day01.txt").getLines().map(_.toInt).toList
 
-  def partOne(): Int = ???
-  def partTwo(): Int = ???
+  def partOne(): Int = input.sliding(2).count(p => p.last > p.head)
+  def partTwo(): Int = input.sliding(3).map(_.sum).sliding(2).count(p => p.last > p.head)
 
 }
