@@ -23,9 +23,15 @@ object Points {
       case Point(x2, y2) if x2 == x && y2 > y => 'S'
       case Point(x2, y2) if y2 == y && x2 < x => 'W'
       case Point(x2, y2) if y2 == y && x2 > x => 'E'
-      case _                                  => throw new IllegalArgumentException("Points are equal")
+      case _ => throw new IllegalArgumentException("Points are equal")
     }
   }
+
+  case class Line(p1: Point, p2: Point):
+    val (dx, dy) = ((p2.x - p1.x).sign, (p2.y - p1.y).sign)
+    def points(): Seq[Point] =
+      val max = math.max((p2.x - p1.x).abs, (p2.y - p1.y).abs)
+      (0 to max).map(i => Point(p1.x + dx * i, p1.y + dy * i))
 
   object Position {
     def zero: Point                  = Point(0, 0)
