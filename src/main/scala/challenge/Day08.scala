@@ -39,7 +39,7 @@ object Day08 {
     entry.output.flatMap(num).mkString.toInt
 
   def parse(s: String): Entry =
-    def _parse(xs: String) = xs.split(" ").map(_.toSet).toList
+    def _parse(xs: String) = xs.split(" ").map(_.toSet).toSeq
     val (pattern, output)  = (s.takeWhile(_ != '|'), s.dropWhile(_ != '|'))
     Entry(_parse(pattern), _parse(output))
 
