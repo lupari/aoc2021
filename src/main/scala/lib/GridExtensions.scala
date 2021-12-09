@@ -18,15 +18,16 @@ object GridExtensions {
     }
   }
 
-  extension (input: Seq[Char])
-    def toGrid: Grid[Char] = {
-      @tailrec
-      def _toGrid(xs: Seq[Char], acc: Grid[Char], current: Point): Grid[Char] =
-        xs match
-          case h :: t if h == '\n' => _toGrid(t, acc, Point(0, current.y + 1))
-          case h :: t => _toGrid(t, acc.updated(current, h), Point(current.x + 1, current.y))
-          case _      => acc
-      _toGrid(input, Map.empty, Point(0, 0))
-    }
+  private def makeGrid[A](input: Seq[Char])(fn: (Char => A)): Grid[A] =
+    @tailrec
+    def helper(xs: Seq[Char], acc: Grid[A], current: Point): Grid[A] =
+      xs match
+        case h :: t if h == '\n' => helper(t, acc, Point(0, current.y + 1))
+        case h :: t => helper(t, acc.updated(current, fn(h)), Point(current.x + 1, current.y))
+        case _      => acc
+    helper(input, Map.empty, Point(0, 0))
+
+  extension (input: Seq[Char]) def toGrid: Grid[Char]   = makeGrid(input)(identity)
+  extension (input: Seq[Char]) def toIntGrid: Grid[Int] = makeGrid(input)(_.asDigit)
 
 }
