@@ -11,7 +11,7 @@ object Day09 {
 
   def isLowPoint(p: Point): Boolean = p.neighbors.forall(n => grid(n) > grid(p))
 
-  def basins(): List[Set[Point]] =
+  lazy val basins: List[Set[Point]] =
     @tailrec
     def helper(xs: Set[Point], acc: List[Set[Point]]): List[Set[Point]] = xs match
       case s if s.isEmpty => acc
@@ -19,12 +19,13 @@ object Day09 {
         val basin = Graphs.bfs(s.head)(_.neighbors.filterNot(grid(_) == 9)).keySet
         helper(s -- basin, acc :+ basin)
 
-    helper(grid.keySet.filterNot(grid(_) == 9), Nil)
+    helper(lowPoints.keySet, Nil)
 
   val grid: Grid[Int] =
     Source.fromResource("day09.txt").mkString.toList.toIntGrid.withDefaultValue(9)
+  val lowPoints: Grid[Int] = grid.filter(kv => isLowPoint(kv._1))
 
-  def partOne(): Int = grid.filter(kv => isLowPoint(kv._1)).map(_._2 + 1).sum
-  def partTwo(): Int = basins().sortBy(_.size).takeRight(3).map(_.size).product
+  def partOne(): Int = lowPoints.map(_._2 + 1).sum
+  def partTwo(): Int = basins.map(_.size).sorted.takeRight(3).product
 
 }
