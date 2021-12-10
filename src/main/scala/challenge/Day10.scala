@@ -5,48 +5,40 @@ import scala.annotation.tailrec
 
 object Day10 {
 
-  case class Inspection(error: Option[Char], unclosed: List[Char])
-  case class Symbol(closure: Char, error: Int, completion: Int)
-  val symbols = Map(
-    '(' -> Symbol(')', 3, 1),
-    '[' -> Symbol(']', 57, 2),
-    '{' -> Symbol('}', 1197, 3),
-    '<' -> Symbol('>', 25137, 4)
+  case class Line(error: Option[Char], unclosed: List[Char])
+  case class Chunk(closure: Char, errorScore: Int, completionScore: Int)
+  val chunks = Map(
+    '(' -> Chunk(')', 3, 1),
+    '[' -> Chunk(']', 57, 2),
+    '{' -> Chunk('}', 1197, 3),
+    '<' -> Chunk('>', 25137, 4)
   )
 
-  def errorScore(c: Char)      = symbols.find(_._2.closure == c).get._2.error
-  def completionScore(c: Char) = symbols.find(_._2.closure == c).get._2.completion
+  def errorScore(c: Char)      = chunks.find(_._2.closure == c).get._2.errorScore
+  def completionScore(c: Char) = chunks.find(_._2.closure == c).get._2.completionScore
+  def autocomplete(l: Line): Long =
+    l.unclosed.reverse.foldLeft(0L)((a, b) => a * 5 + completionScore(chunks(b).closure))
 
-  def autocomplete(i: Inspection): Long =
+  def inspect(s: String): Line =
     @tailrec
-    def helper(xs: List[Char], acc: Long): Long = xs match
-      case Nil => acc
+    def helper(xs: List[Char], unclosed: List[Char]): Line = xs match
+      case Nil => Line(None, unclosed)
       case h :: t =>
-        val closure = symbols(h).closure
-        helper(t, acc * 5 + completionScore(closure))
-
-    helper(i.unclosed.reverse, 0)
-
-  def inspect(s: String): Inspection =
-    @tailrec
-    def helper(xs: List[Char], opened: List[Char]): Inspection = xs match
-      case Nil => Inspection(None, opened)
-      case h :: t =>
-        symbols.find(_._2.closure == h) match
+        chunks.find(_._2.closure == h) match
           case None =>
-            helper(t, opened :+ h)
-          case Some(x, y) =>
-            if opened.last == x then helper(t, opened.dropRight(1))
-            else Inspection(Option(h), Nil)
+            helper(t, unclosed :+ h)
+          case Some(x, _) =>
+            if unclosed.last == x then helper(t, unclosed.dropRight(1))
+            else Line(Option(h), Nil)
 
     helper(s.toList.tail, List(s.head))
 
   val input: List[String] = Source.fromResource("day10.txt").getLines().toList
-  val inspected           = input.map(inspect)
+  val lines: List[Line]   = input.map(inspect)
 
-  def partOne(): Int = inspected.flatMap(_.error).map(errorScore(_)).sum
+  def partOne(): Int = lines.flatMap(_.error).map(errorScore).sum
   def partTwo(): Long =
-    val scores = inspected.filter(_.unclosed.nonEmpty).map(i => autocomplete(i))
+    val scores = lines.filter(_.unclosed.nonEmpty).map(autocomplete)
     scores.sorted.drop(scores.length / 2).head
 
 }

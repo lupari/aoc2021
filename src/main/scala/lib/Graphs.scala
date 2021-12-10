@@ -3,10 +3,9 @@ package lib
 import scala.annotation.tailrec
 import scala.collection.mutable
 
-object Graphs {
-
-  object DFS {
-    def apply[A](start: A)(nf: A => Iterable[A]): Iterable[A] = {
+object Graphs:
+  object dfs:
+    def apply[A](start: A)(nf: A => Iterable[A]): Iterable[A] =
       def _dfs(s: A, seen: Iterable[A]): Iterable[A] =
         if seen.iterator.contains(s) then seen
         else
@@ -14,11 +13,9 @@ object Graphs {
           neighbors.foldLeft(Iterable(s) ++ seen)((b, a) => _dfs(a, b))
 
       _dfs(start, Nil)
-    }
-  }
 
-  object BFS {
-    def apply[A](start: A)(nf: A => Iterable[A]): Map[A, Int] = {
+  object bfs:
+    def apply[A](start: A)(nf: A => Iterable[A]): Map[A, Int] =
       @tailrec
       def _bfs(seen: Map[A, Int], unseen: Map[A, Int]): Map[A, Int] =
         val neighbors = for {
@@ -29,11 +26,9 @@ object Graphs {
         if unseen2.isEmpty then seen2 else _bfs(seen2, unseen2)
 
       _bfs(Map.empty, Map(start -> 0))
-    }
-  }
 
-  object AStar {
-    def apply[A](start: A, goal: A)(cf: (A, A) => Int)(nf: A => Iterable[A]): Map[A, Int] = {
+  object aStar:
+    def apply[A](start: A, goal: A)(cf: (A, A) => Int)(nf: A => Iterable[A]): Map[A, Int] =
       val open  = mutable.ListBuffer[(A, Int)]((start, 0))
       val costs = mutable.Map[A, Int](start -> 0)
       while open.nonEmpty do
@@ -50,7 +45,3 @@ object Graphs {
               open += ((next, priority))
 
       costs.toMap
-    }
-  }
-
-}
