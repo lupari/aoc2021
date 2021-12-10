@@ -2,7 +2,7 @@ package challenge
 
 import scala.io.Source
 
-object Day06 {
+object Day06:
 
   def evolve(population: Map[Int, Long]): Map[Int, Long] =
     val population2 = population.filter(_._1 > 0).map(p => p._1 - 1 -> p._2)
@@ -15,5 +15,3 @@ object Day06 {
 
   def partOne(): Long = Iterator.iterate(population)(evolve).drop(80).next.values.sum
   def partTwo(): Long = Iterator.iterate(population)(evolve).drop(256).next.values.sum
-
-}

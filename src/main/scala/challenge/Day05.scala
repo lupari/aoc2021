@@ -3,7 +3,7 @@ package challenge
 import scala.io.Source
 import lib.Points.{Point, Line}
 
-object Day05 {
+object Day05:
 
   private val regex = """(\d+),(\d+) -> (\d+),(\d+)""".r
   def parse(s: String): Line = s match
@@ -19,5 +19,3 @@ object Day05 {
   val input: List[Line] = Source.fromResource("day05.txt").getLines().map(parse).toList
   def partOne(): Int    = intersections(input.filter(l => l.dx == 0 || l.dy == 0))
   def partTwo(): Int    = intersections(input)
-
-}

@@ -2,15 +2,15 @@ package lib
 
 import scala.annotation.tailrec
 
-object Parsers {
+object Parsers:
   type Op = Char
 
-  object AST {
+  object AST:
     trait Node
     case class Value(v: Int)                         extends Node
     case class Tree(op: Op, left: Node, right: Node) extends Node
 
-    def eval(node: Node): Long = node match {
+    def eval(node: Node): Long = node match
       case Tree(op, l, r) =>
         op match
           case '+' => eval(l) + eval(r)
@@ -18,9 +18,8 @@ object Parsers {
           case '*' => eval(l) * eval(r)
           case '/' => eval(l) / eval(r)
       case Value(op) => op.toLong
-    }
 
-    def parse(expr: String)(precedence: (Op, Op) => Boolean): Node = {
+    def parse(expr: String)(precedence: (Op, Op) => Boolean): Node =
 
       def compose(nodes: List[Node], ops: List[Op]): List[Node] =
         ops.foldLeft(nodes)((ns, op) => Tree(op, ns.tail.head, ns.head) +: ns.tail.tail)
@@ -40,13 +39,10 @@ object Parsers {
               helper(t, h +: ops2, compose(acc, out))
 
       helper(expr.filterNot(_ == ' ').toList, Nil, Nil)
-    }
 
-  }
+  object Postfix:
 
-  object Postfix {
-
-    def eval(expr: List[Char]): Long = {
+    def eval(expr: List[Char]): Long =
 
       @tailrec
       def helper(xs: List[Char], stack: List[Long]): Long = xs match
@@ -64,9 +60,8 @@ object Parsers {
               helper(t, v +: stack.drop(2))
 
       helper(expr, Nil)
-    }
 
-    def parse(expr: String)(precedence: (Op, Op) => Boolean): List[Char] = {
+    def parse(expr: String)(precedence: (Op, Op) => Boolean): List[Char] =
 
       @tailrec
       def helper(xs: List[Char], ops: List[Op], acc: List[Char]): List[Char] = xs match
@@ -83,8 +78,3 @@ object Parsers {
               helper(t, h +: ops2, acc ++ out)
 
       helper(expr.filterNot(_ == ' ').toList, Nil, Nil)
-    }
-
-  }
-
-}
