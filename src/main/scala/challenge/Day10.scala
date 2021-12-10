@@ -5,7 +5,7 @@ import scala.annotation.tailrec
 
 object Day10 {
 
-  case class Line(error: Option[Char], unclosed: List[Char])
+  type Inspection = Either[Char, List[Char]]
   case class Chunk(closure: Char, errorScore: Int, completionScore: Int)
   val chunks = Map(
     '(' -> Chunk(')', 3, 1),
@@ -14,31 +14,30 @@ object Day10 {
     '<' -> Chunk('>', 25137, 4)
   )
 
-  def errorScore(c: Char)      = chunks.find(_._2.closure == c).get._2.errorScore
-  def completionScore(c: Char) = chunks.find(_._2.closure == c).get._2.completionScore
-  def autocomplete(l: Line): Long =
-    l.unclosed.reverse.foldLeft(0L)((a, b) => a * 5 + completionScore(chunks(b).closure))
+  def errorScore(c: Char) = chunks.find(_._2.closure == c).get._2.errorScore
+  def autocomplete(xs: List[Char]): Long =
+    xs.reverse.foldLeft(0L)((a, b) => a * 5 + chunks(b).completionScore)
 
-  def inspect(s: String): Line =
+  def inspect(s: String): Inspection =
     @tailrec
-    def helper(xs: List[Char], unclosed: List[Char]): Line = xs match
-      case Nil => Line(None, unclosed)
+    def helper(xs: List[Char], unclosed: List[Char]): Inspection = xs match
+      case Nil => Right(unclosed)
       case h :: t =>
         chunks.find(_._2.closure == h) match
           case None =>
             helper(t, unclosed :+ h)
           case Some(x, _) =>
-            if unclosed.last == x then helper(t, unclosed.dropRight(1))
-            else Line(Option(h), Nil)
+            if unclosed.last == x then helper(t, unclosed.init)
+            else Left(h)
 
     helper(s.toList.tail, List(s.head))
 
-  val input: List[String] = Source.fromResource("day10.txt").getLines().toList
-  val lines: List[Line]   = input.map(inspect)
+  val input: List[String]     = Source.fromResource("day10.txt").getLines().toList
+  val lines: List[Inspection] = input.map(inspect)
 
-  def partOne(): Int = lines.flatMap(_.error).map(errorScore).sum
+  def partOne(): Int = lines.collect({ case Left(e) => e }).map(errorScore).sum
   def partTwo(): Long =
-    val scores = lines.filter(_.unclosed.nonEmpty).map(autocomplete)
+    val scores = lines.collect({ case Right(l) => l }).map(autocomplete)
     scores.sorted.drop(scores.length / 2).head
 
 }
