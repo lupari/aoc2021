@@ -3,7 +3,7 @@ package challenge
 import scala.io.Source
 import lib.Points.{Point, Position}
 
-object Day02 {
+object Day02:
 
   trait Cmd
   case class MoveHorizontal(amount: Int) extends Cmd
@@ -39,5 +39,3 @@ object Day02 {
 
   def partOne(): Int = input.foldLeft(Pos1(Position.zero))(advance).product
   def partTwo(): Int = input.foldLeft(Pos2(Position.zero))(advance).product
-
-}

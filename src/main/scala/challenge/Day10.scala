@@ -3,7 +3,7 @@ package challenge
 import scala.io.Source
 import scala.annotation.tailrec
 
-object Day10 {
+object Day10:
 
   type Inspection = Either[Char, List[Char]]
   case class Chunk(closure: Char, errorScore: Int, completionScore: Int)
@@ -14,10 +14,9 @@ object Day10 {
     '<' -> Chunk('>', 25137, 4)
   )
 
-  def errorScore(c: Char)      = chunks.find(_._2.closure == c).get._2.errorScore
-  def completionScore(c: Char) = chunks.find(_._2.closure == c).get._2.completionScore
+  def errorScore(c: Char): Int = chunks.find(_._2.closure == c).get._2.errorScore
   def autocomplete(xs: List[Char]): Long =
-    xs.reverse.foldLeft(0L)((a, b) => a * 5 + completionScore(chunks(b).closure))
+    xs.reverse.foldLeft(0L)((a, b) => a * 5 + chunks(b).completionScore)
 
   def inspect(s: String): Inspection =
     @tailrec
@@ -28,7 +27,7 @@ object Day10 {
           case None =>
             helper(t, unclosed :+ h)
           case Some(x, _) =>
-            if unclosed.last == x then helper(t, unclosed.dropRight(1))
+            if unclosed.last == x then helper(t, unclosed.init)
             else Left(h)
 
     helper(s.toList.tail, List(s.head))
@@ -36,9 +35,7 @@ object Day10 {
   val input: List[String]     = Source.fromResource("day10.txt").getLines().toList
   val lines: List[Inspection] = input.map(inspect)
 
-  def partOne(): Int = lines.collect({ case Left(e) => e }).map(errorScore).sum
+  def partOne(): Int = lines.collect({ case Left(e) => errorScore(e) }).sum
   def partTwo(): Long =
-    val scores = lines.collect({ case Right(l) => l }).map(autocomplete)
+    val scores = lines.collect({ case Right(l) => autocomplete(l) })
     scores.sorted.drop(scores.length / 2).head
-
-}

@@ -5,7 +5,7 @@ import scala.annotation.tailrec
 import lib.Points.Point
 import lib.Graphs
 
-object Day09 {
+object Day09:
 
   import lib.GridExtensions._
 
@@ -27,5 +27,3 @@ object Day09 {
 
   def partOne(): Int = lowPoints.map(_._2 + 1).sum
   def partTwo(): Int = basins.map(_.size).sorted.takeRight(3).product
-
-}

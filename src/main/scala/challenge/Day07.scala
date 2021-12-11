@@ -3,7 +3,7 @@ package challenge
 import scala.io.Source
 import lib.Math._
 
-object Day07 {
+object Day07:
 
   def fuelCost(n: Int)(costFn: (Int, Int) => Int): Int = crabs.map(costFn(n, _)).sum
 
@@ -15,5 +15,3 @@ object Day07 {
     Seq(avg.floor.toInt, avg.ceil.toInt)
       .map(fuelCost(_)((a, b) => arithmeticSeries(a, b, normalized = true)))
       .min
-
-}

@@ -11,15 +11,13 @@ object Day11 {
     @tailrec
     def helper(prev: Set[Point], grid: Grid[Int]): Grid[Int] =
       val flashed = grid.filter(_._2 > 9).map(_._1).toSet -- prev
-      if flashed.isEmpty then grid
+      if flashed.isEmpty then grid.map(kv => (kv._1, if kv._2 > 9 then 0 else kv._2))
       else
-        val g2      = flashed.toList.flatMap(_.surroundings).groupMapReduce(identity)(_ => 1)(_ + _)
-        val nextGen = grid.map(kv => (kv._1, kv._2 + g2.getOrElse(kv._1, 0))).toMap
-        helper(flashed ++ prev, nextGen)
+        val incOne = flashed.toList.flatMap(_.surroundings).groupMapReduce(identity)(_ => 1)(_ + _)
+        val g2     = grid.map(kv => (kv._1, kv._2 + incOne.getOrElse(kv._1, 0))).toMap
+        helper(flashed ++ prev, g2)
 
-    helper(Set.empty, xs.map(kv => (kv._1, kv._2 + 1))).map(kv =>
-      (kv._1, if kv._2 > 9 then 0 else kv._2)
-    )
+    helper(Set.empty, xs.map(kv => (kv._1, kv._2 + 1)))
 
   val input: Grid[Int] = Source.fromResource("day11.txt").mkString.toList.toIntGrid
 

@@ -3,7 +3,7 @@ package challenge
 import scala.io.Source
 import scala.annotation.tailrec
 
-object Day04 {
+object Day04:
 
   case class Player(board: List[Set[Int]]):
     def mark(n: Int): Player = copy(board = board.map(_ - n))
@@ -40,5 +40,3 @@ object Day04 {
       if losers.isEmpty && ps.length == 1 then (Option(ps.head), Nil) else (None, losers)
 
     findScore()(findLoser).get
-
-}

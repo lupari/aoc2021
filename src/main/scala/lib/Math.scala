@@ -1,6 +1,6 @@
 package lib
 
-object Math {
+object Math:
 
   def mean(seq: Seq[Int]): Double = seq.sum / seq.length.toDouble
 
@@ -16,5 +16,3 @@ object Math {
     val (a1, an) = if normalized then (0, dist) else (a, b)
     val n        = dist / step + 1
     n * (a1 + an) / 2
-
-}

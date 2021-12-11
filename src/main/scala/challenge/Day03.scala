@@ -3,7 +3,7 @@ package challenge
 import scala.io.Source
 import scala.annotation.tailrec
 
-object Day03 {
+object Day03:
 
   def commonest(xs: List[Char]): Char = if xs.count(_ == '0') > xs.length / 2 then '0' else '1'
   def rarest(xs: List[Char]): Char    = if commonest(xs) == '0' then '1' else '0'
@@ -30,5 +30,3 @@ object Day03 {
     val o   = findMatch(input)(commonest)
     val co2 = findMatch(input)(rarest)
     dec(o) * dec(co2)
-
-}

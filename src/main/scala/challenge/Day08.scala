@@ -2,7 +2,7 @@ package challenge
 
 import scala.io.Source
 
-object Day08 {
+object Day08:
 
   type Digit = Set[Char]
   case class Entry(pattern: Seq[Digit], output: Seq[Digit])
@@ -48,5 +48,3 @@ object Day08 {
 
   def partOne(): Int = entries.flatMap(_.output).count(o => predef.contains(o.size))
   def partTwo(): Int = entries.map(decode).sum
-
-}
