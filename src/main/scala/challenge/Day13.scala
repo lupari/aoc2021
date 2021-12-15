@@ -42,4 +42,4 @@ object Day13:
   def partOne(): Int = fold(folds.head, grid).count(_._2 == '#')
   def partTwo(): Array[Array[Char]] =
     val g = folds.foldLeft(grid)((a, b) => fold(b, a))
-    g.canvas(' ')(c => if c == '#' then '█' else ' ')
+    g.canvas(' ')(c => if c == '#' then '█' else c)
