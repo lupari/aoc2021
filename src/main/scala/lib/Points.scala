@@ -11,20 +11,22 @@ object Points:
     def corners: List[Point] =
       List(Point(x - 1, y - 1), Point(x + 1, y - 1), Point(x - 1, y + 1), Point(x + 1, y + 1))
     def surroundings: List[Point] = neighbors ++ corners
-    def rotate(deg: Int): Point = deg % 360 match {
+    def rotate(deg: Int): Point = deg % 360 match
       case 90 | -270  => Point(y, -x)
       case 180 | -180 => Point(-x, -y)
       case -90 | 270  => Point(-y, x)
       case _          => this
-    }
+
     def manhattan(p: Point = Position.zero): Int = (p.x - x).abs + (p.y - y).abs
-    def directionTo(other: Point): Char = other match {
+    def directionTo(other: Point): Char = other match
       case Point(x2, y2) if x2 == x && y2 < y => 'N'
       case Point(x2, y2) if x2 == x && y2 > y => 'S'
       case Point(x2, y2) if y2 == y && x2 < x => 'W'
       case Point(x2, y2) if y2 == y && x2 > x => 'E'
       case _ => throw new IllegalArgumentException("Points are equal")
-    }
+
+  object Point:
+    val zero: Point = Point(0, 0)
 
   case class Line(p1: Point, p2: Point):
     val (dx, dy) = ((p2.x - p1.x).sign, (p2.y - p1.y).sign)
