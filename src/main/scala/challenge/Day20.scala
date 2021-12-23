@@ -9,30 +9,30 @@ import lib.Numbers.bin2dec
 object Day20:
   extension (c: Char) def toDigit: Int = if c == '#' then 1 else 0
 
-  def neighbours(p: Point): Seq[Point] = for dy <- -1 to 1; dx <- -1 to 1
-  yield Point(p.x + dx, p.y + dy)
+  def neighbours(p: Point): Seq[Point] =
+    for dy <- -1 to 1; dx <- -1 to 1 yield Point(p.x + dx, p.y + dy)
 
   case class Image(pixels: Map[Point, Int], min: Int, max: Int):
     def at(point: Point, default: Int): Int =
       bin2dec(neighbours(point).map(pixels.getOrElse(_, default)).mkString).toInt
 
-  def parse(input: Seq[String]): (Seq[Int], Image) =
-    val algorithm = input.head.map(toDigit)
+  def parse(input: List[String]): (List[Int], Image) =
+    val algorithm = input.head.map(toDigit).toList
     val data      = input.drop(2)
-    val pixels = for y <- 0 until data.size; x <- 0 until data.size
-    yield Point(x, y) -> data(y)(x).toDigit
+    val pixels =
+      for y <- 0 until data.size; x <- 0 until data.size yield Point(x, y) -> data(y)(x).toDigit
     (algorithm, Image(pixels.toMap, -1, data.size))
 
-  def step(algorithm: Seq[Int])(default: Int, grid: Image): (Int, Image) =
+  def step(algorithm: Seq[Int])(default: Int, img: Image): (Int, Image) =
     val pixels = for
-      y <- grid.min to grid.max
-      x <- grid.min to grid.max
+      x <- img.min to img.max
+      y <- img.min to img.max
     yield
-      val i = grid.at(Point(x, y), default)
+      val i = img.at(Point(x, y), default)
       Point(x, y) -> algorithm(i)
 
     val nextDefault = if default == 0 then 1 else 0
-    val nextGrid    = Image(pixels.toMap, grid.min - 1, grid.max + 1)
+    val nextGrid    = Image(pixels.toMap, img.min - 1, img.max + 1)
     (nextDefault, nextGrid)
 
   def enhance(n: Int): Int =
