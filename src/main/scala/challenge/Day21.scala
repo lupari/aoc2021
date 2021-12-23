@@ -3,6 +3,7 @@ package challenge
 import scala.collection.mutable
 import scala.io.Source
 import scala.annotation.tailrec
+import challenge.Day21.Player
 
 object Day21:
   case class Player(pos: Int, score: Int):
@@ -24,38 +25,39 @@ object Day21:
 
     helper(p1, p2, 0)
 
-  def play2(p1: Player, p2: Player): (Long, Long) = {
-
+  def play2(p1: Player, p2: Player): (Long, Long) =
     val memo = mutable.Map.empty[(Player, Player), (Long, Long)]
-    val frequencies = {
-      (for {
+    val frequencies =
+      (for
         r1 <- 1 to 3
         r2 <- 1 to 3
         r3 <- 1 to 3
-      } yield r1 + r2 + r3).groupMapReduce(identity)(_ => 1)(_ + _)
-    }
+      yield r1 + r2 + r3).groupMapReduce(identity)(_ => 1)(_ + _)
 
     def helper(p1: Player, p2: Player): (Long, Long) =
       memo.getOrElseUpdate(
         (p1, p2),
-        if (p1.score > 20) (1L, 0L)
-        else if (p2.score > 20) (0L, 1L)
+        if (p1.score > 20) then (1L, 0L)
+        else if (p2.score > 20) then (0L, 1L)
         else
           val rolls =
             for
               (roll, rollCount) <- frequencies
-              (p2Wins, p1Wins) = helper(p2, p1.move(roll))
+              next1            = p1.move(roll)
+              (p2Wins, p1Wins) = helper(p2, next1)
             yield (rollCount * p1Wins, rollCount * p2Wins)
           rolls.reduce({ case ((a, b), (c, d)) => (a + c, b + d) })
       )
 
     helper(p1, p2)
-  }
+
+  val input        = Source.fromResource("day21.txt").getLines().toList
+  val (pos1, pos2) = (input.head.last.asDigit, input.last.last.asDigit)
 
   def partOne(): Int =
-    val (_, loser, rolls) = play(Player(1, 0), Player(6, 0))
+    val (_, loser, rolls) = play(Player(pos1, 0), Player(pos2, 0))
     loser.score * rolls
 
   def partTwo(): Long =
-    val (s1, s2) = play2(Player(1, 0), Player(6, 0))
+    val (s1, s2) = play2(Player(pos1, 0), Player(pos2, 0))
     s1 max s2
