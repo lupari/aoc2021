@@ -1,6 +1,5 @@
 package challenge
 
-import scala.collection.mutable
 import scala.io.Source
 import scala.annotation.tailrec
 import scala.collection.immutable.Range.Inclusive

@@ -3,7 +3,6 @@ package challenge
 import scala.collection.mutable
 import scala.io.Source
 import scala.annotation.tailrec
-import challenge.Day21.Player
 
 object Day21:
   case class Player(pos: Int, score: Int):
