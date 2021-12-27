@@ -18,17 +18,13 @@ object Day15:
       .flatten
       .toMap
 
+  def solve(g: Grid[Int]) =
+    val goal: Point            = Point(g.maxBy(_._1.x)._1.x, g.maxBy(_._1.y)._1.y)
+    def nf(p: Point)           = p.neighbors.filter(g.contains)
+    def cf(a: Point, b: Point) = g(b)
+    Graphs.dijkstra(Point.zero, goal)(nf)(cf)._2.get._2
+
   val grid = Source.fromResource("day15.txt").mkString.toList.toIntGrid
 
-  def partOne(): Int =
-    val goal: Point            = Point(grid.maxBy(_._1.x)._1.x, grid.maxBy(_._1.y)._1.y)
-    def nf(p: Point)           = p.neighbors.filter(grid.contains)
-    def cf(a: Point, b: Point) = grid(b)
-    Graphs.dijkstra(Point.zero, goal)(nf)(cf)._2.get._2
-
-  def partTwo(): Int =
-    val grid2                  = expand(grid)
-    val goal: Point            = Point(grid2.maxBy(_._1.x)._1.x, grid2.maxBy(_._1.y)._1.y)
-    def nf(p: Point)           = p.neighbors.filter(grid2.contains)
-    def cf(a: Point, b: Point) = grid2(b)
-    Graphs.dijkstra(Point.zero, goal)(nf)(cf)._2.get._2
+  def partOne(): Int = solve(grid)
+  def partTwo(): Int = solve(expand(grid))

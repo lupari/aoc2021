@@ -37,6 +37,6 @@ object Day04:
   def partTwo(): Int =
     def findLoser = (ps: List[Player]) =>
       val losers = ps.filterNot(_.hasBingo)
-      if losers.isEmpty && ps.length == 1 then (Option(ps.head), Nil) else (None, losers)
+      if losers.isEmpty && ps.length == 1 then (Some(ps.head), Nil) else (None, losers)
 
     findScore()(findLoser).get

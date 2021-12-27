@@ -2,6 +2,7 @@ package challenge
 
 import scala.io.Source
 import scala.annotation.tailrec
+import lib.Numbers._
 
 object Day03:
 
@@ -17,16 +18,14 @@ object Day03:
 
     helper(xs, 0)
 
-  def dec(s: String): Int = Integer.parseInt(s, 2)
-
   val input: List[String] = Source.fromResource("day03.txt").getLines().toList
 
-  def partOne(): Int =
+  def partOne(): Long =
     val gamma   = input.transpose.map(commonest).mkString
     val epsilon = input.transpose.map(rarest).mkString
-    dec(gamma) * dec(epsilon)
+    bin2dec(gamma) * bin2dec(epsilon)
 
-  def partTwo(): Int =
+  def partTwo(): Long =
     val o   = findMatch(input)(commonest)
     val co2 = findMatch(input)(rarest)
-    dec(o) * dec(co2)
+    bin2dec(o) * bin2dec(co2)

@@ -54,13 +54,12 @@ object Day22:
       TurnOff(Cuboid(x1.toInt to x2.toInt, y1.toInt to y2.toInt, z1.toInt to z2.toInt))
 
   def process(xs: List[Instruction]): Set[(Int, Int, Int)] =
+    val bounds = Cuboid(-50 to 50, -50 to 50, -50 to 50)
     @tailrec
     def helper(xs: List[Instruction], acc: Set[(Int, Int, Int)]): Set[(Int, Int, Int)] = xs match
       case Nil => acc
       case h :: t =>
-        val bounds = Cuboid(-50 to 50, -50 to 50, -50 to 50)
-        val cuboid = h.cuboid.intersection(bounds)
-        cuboid match
+        h.cuboid.intersection(bounds) match
           case Some(c) =>
             val next = for x <- c.x; y <- c.y; z <- c.z yield (x, y, z)
             h match
@@ -77,7 +76,7 @@ object Day22:
       case h :: t =>
         h match
           case TurnOn(c) =>
-            acc.view.map(_.intersection(c)).flatten.headOption match
+            acc.view.flatMap(_.intersection(c)).headOption match
               case None => helper(t, c :: acc)
               case Some(i) =>
                 val remaining = h.cuboid.split(i).map(TurnOn(_))
